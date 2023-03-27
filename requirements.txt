@@ -1,0 +1,7 @@
+autopep8==2.0.2
+darkdetect==0.8.0
+keyboard==0.13.5
+numpy==1.24.2
+pycodestyle==2.10.0
+pygame==2.3.0
+tomli==2.0.1

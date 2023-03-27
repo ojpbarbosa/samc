@@ -4,10 +4,9 @@ import tkinter as tk
 from theme import colors
 from celullar_automata import CellularAutomata
 from button import Button
-from utilities import human_format
 
 
-def maze():
+def display():
     pygame.init()
 
     clock = pygame.time.Clock()
@@ -15,22 +14,21 @@ def maze():
 
     pygame.display.set_caption('Stone Automata Maze Challenge phase 1')
 
-    cellular_automata = CellularAutomata(screen)
+    cellular_automata = CellularAutomata("matrix.txt")
 
-    root = tk.Tk()
+    # root = tk.Tk()
 
-    button_x = root.winfo_screenwidth() // 2 - 120
-    button_y = root.winfo_screenheight() - 82.5
+    # button_x = root.winfo_screenwidth() // 2 - 120
+    # button_y = root.winfo_screenheight() - 82.5
 
     restart_button = Button(
-        screen, colors['secondary'], colors['primary'], button_x, button_y, 240, 60, 'restart')
+        screen, colors['green'], colors['background'], 1520, 60, 240, 60, 'restart')
 
-    running = True
-
+    paused = running = True
     font = pygame.font.Font('./fonts/emulogic.ttf', 24)
 
     while running:
-        screen.fill(colors['primary'])
+        screen.fill(colors['background'])
         clock.tick(60)
 
         for event in pygame.event.get():
@@ -42,17 +40,34 @@ def maze():
                     running = False
 
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_p:
-                    cellular_automata.paused = not cellular_automata.paused
+                    paused = not paused
 
         if pygame.mouse.get_pressed()[0]:
             x, y = pygame.mouse.get_pos()
 
-            cellular_automata.handle_click(x, y)
-
             if restart_button.is_hovering(x, y):
                 cellular_automata.restart()
 
-        cellular_automata.compute_next_generation()
+        if not paused:
+            cellular_automata.compute_next_generation()
+
+        screen.fill(colors['background'])
+
+        for x in range(cellular_automata.column_count):
+            for y in range(cellular_automata.row_count):
+                cell = cellular_automata.matrix[x, y]
+
+                if cell == 1:
+                    pygame.draw.rect(screen, colors['green'],
+                                     (x * 16, y * 16, 16, 16))
+
+                elif cell == 3 or cell == 4:
+                    pygame.draw.rect(screen, colors['yellow'],
+                                     (x * 16, y * 16, 16, 16))
+
+                else:
+                    pygame.draw.rect(screen, colors['shade'],
+                                     (x * 16, y * 16, 16, 16), 1)
 
         x, y = pygame.mouse.get_pos()
         if restart_button.is_hovering(x, y):
@@ -68,4 +83,4 @@ def maze():
 
 
 if __name__ == '__main__':
-    maze()
+    display
