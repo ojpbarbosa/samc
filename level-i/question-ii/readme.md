@@ -31,7 +31,7 @@
 
   <h2>References</h2>
   <ul>
-    <li><a href="https://sigmageek.com/solution/stone-automata-maze-challenge">Stone Maze Automata Challenge</a></li>
+    <li><a href="https://sigmageek.com/challenge/stone-automata-maze-challenge">Stone Maze Automata Challenge</a></li>
     <li><a href="https://www.python.org/">Python</a></li>
     <ul>
       <li><a href="https://www.pygame.org/">pygame</a></li>
