@@ -3,6 +3,7 @@ import pygame
 import tkinter as tk
 import sys
 import os
+import darkdetect
 
 parent = os.path.abspath('.')
 sys.path.insert(1, parent)
@@ -22,7 +23,7 @@ def view():
     pygame.display.set_caption('Stone Automata Maze Challenge')
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    icon_path = os.path.join(dir_path, 'images', 'samc-icon.png')
+    icon_path = os.path.join(dir_path, 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
 
