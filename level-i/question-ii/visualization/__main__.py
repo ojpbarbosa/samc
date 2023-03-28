@@ -1,38 +1,53 @@
+
 import pygame
 import tkinter as tk
+import sys
+import os
 
-from theme import colors
-from celullar_automata import CellularAutomata
-from button import Button
+parent = os.path.abspath('.')
+sys.path.insert(1, parent)
 
 
-def display():
+import celullar_automata
+import theme
+import button
+
+
+def view():
     pygame.init()
 
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
-    pygame.display.set_caption('Stone Automata Maze Challenge phase 1')
+    pygame.display.set_caption('Stone Automata Maze Challenge')
 
-    cellular_automata = CellularAutomata("matrix.txt")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    icon_path = os.path.join(dir_path, 'images', 'samc-icon.png')
+    icon = pygame.image.load(icon_path)
+    pygame.display.set_icon(icon)
+
+    ca = celullar_automata.CellularAutomata('matrix.txt')
 
     root = tk.Tk()
 
+    screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    cell_size = screen_height // cellular_automata.row_count
-
-    button_x = root.winfo_screenwidth() // 2 - 120
-    button_y = screen_height - 82.5
-
-    restart_button = Button(
-        screen, colors['green'], colors['background'], 1520, 60, 240, 60, 'restart')
+    cell_size = screen_height // ca.row_count
 
     paused = running = True
-    font = pygame.font.Font('./fonts/emulogic.ttf', 24)
+
+    font_path = os.path.join(dir_path, 'fonts', 'emulogic.ttf')
+    font = pygame.font.Font(font_path, 24)
+
+    restart_button_x = screen_width - (screen_width - cell_size * ca.column_count) // 2 - 120
+    restart_button_y = 60
+
+    restart_button = button.Button(
+        screen, font, theme.colors['green'], theme.colors['background'], restart_button_x, restart_button_y, 240, 60, 'restart')
 
     while running:
-        screen.fill(colors['background'])
+        screen.fill(theme.colors['background'])
         clock.tick(60)
 
         for event in pygame.event.get():
@@ -50,27 +65,28 @@ def display():
             x, y = pygame.mouse.get_pos()
 
             if restart_button.is_hovering(x, y):
-                cellular_automata.restart()
+                ca.restart()
+                paused = True
 
         if not paused:
-            cellular_automata.compute_next_generation()
+            ca.compute_next_generation()
 
-        screen.fill(colors['background'])
+        screen.fill(theme.colors['background'])
 
-        for x in range(cellular_automata.column_count):
-            for y in range(cellular_automata.row_count):
-                cell = cellular_automata.matrix[x, y]
+        for x in range(ca.column_count):
+            for y in range(ca.row_count):
+                cell = ca.matrix[x, y]
 
                 if cell == 1:
-                    pygame.draw.rect(screen, colors['green'],
+                    pygame.draw.rect(screen, theme.colors['green'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size))
 
                 elif cell == 3 or cell == 4:
-                    pygame.draw.rect(screen, colors['yellow'],
+                    pygame.draw.rect(screen, theme.colors['yellow'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size))
 
                 else:
-                    pygame.draw.rect(screen, colors['shade'],
+                    pygame.draw.rect(screen, theme.colors['shade'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size), 1)
 
         x, y = pygame.mouse.get_pos()
@@ -87,4 +103,4 @@ def display():
 
 
 if __name__ == '__main__':
-    display()
+    view()

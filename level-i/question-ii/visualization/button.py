@@ -1,10 +1,11 @@
-# https://www.youtube.com/watch?v=4_9twnEduFA
+# inspired by https://www.youtube.com/watch?v=4_9twnEduFA
 import pygame
 
 
 class Button:
-    def __init__(self, screen, background_color, text_color, x, y, width, height, text):
+    def __init__(self, screen, font, background_color, text_color, x, y, width, height, text):
         self.screen = screen
+        self.font = font
 
         self.background_color = background_color
         self.text_color = text_color
@@ -17,7 +18,6 @@ class Button:
 
         self.text = text
 
-        self.font = pygame.font.Font('./fonts/emulogic.ttf', 32)
 
         self.hovering = False
 
