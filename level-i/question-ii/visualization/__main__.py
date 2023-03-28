@@ -5,8 +5,8 @@ import sys
 import os
 import darkdetect
 
-parent = os.path.abspath('.')
-sys.path.insert(1, parent)
+parent_path = os.path.abspath('.')
+sys.path.insert(1, parent_path)
 
 
 import celullar_automata
@@ -27,7 +27,10 @@ def view():
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
 
-    ca = celullar_automata.CellularAutomata('matrix.txt')
+    # TODO: add select file button as initial screen
+    parent_path = os.path.abspath('../question-ii')
+    matrix_path = os.path.join(parent_path, 'data', 'matrix.txt')
+    ca = celullar_automata.CellularAutomata(matrix_path)
 
     root = tk.Tk()
 
