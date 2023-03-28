@@ -1,19 +1,27 @@
 import numpy as np
-from time import sleep
 
 
 class CellularAutomata:
     def __init__(self, filepath):
         self.filepath = filepath
 
+        self.matrices = []
         self.matrix = []
         self.column_count = 0
         self.row_count = 0
 
         self.generation = 0
-        self.generation_interval = 0.1
 
         self.load_matrix()
+
+    def backtrack_generation(self):
+        self.matrix = self.matrices.pop()
+        self.generation -= 1
+
+    def attribute_next_generation(self):
+        self.matrices.append(self.matrix)
+        self.matrix = self.compute_next_generation()
+        self.generation += 1
 
     def compute_next_generation(self):
         next_generation_matrix = np.ndarray(
@@ -38,10 +46,7 @@ class CellularAutomata:
                 else:
                     next_generation_matrix[x, y] = cell
 
-        self.matrix = next_generation_matrix
-        self.generation += 1
-
-        sleep(self.generation_interval)
+        return next_generation_matrix
 
     def get_cell_neighbors(self, x, y):
         neighbors = 0

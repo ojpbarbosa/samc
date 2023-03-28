@@ -7,4 +7,5 @@ colors = {
     'shade': '#232323' if theme == 'Dark' else '#d2d2d2',
     'green': '#008f5b',
     'yellow': '#ffff4d',
+    'red': '#d00033',
 }

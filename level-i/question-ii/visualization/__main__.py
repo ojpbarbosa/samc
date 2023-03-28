@@ -1,17 +1,18 @@
 
 import pygame
+import darkdetect
 import tkinter as tk
 import sys
 import os
-import darkdetect
+from time import sleep
 
 parent_path = os.path.abspath('.')
 sys.path.insert(1, parent_path)
 
-
 import celullar_automata
-import theme
+import pathfinder
 import button
+import theme
 
 
 def view():
@@ -23,19 +24,42 @@ def view():
     pygame.display.set_caption('Stone Automata Maze Challenge')
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    icon_path = os.path.join(dir_path, 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
+    icon_path = os.path.join(
+        dir_path, 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
 
     # TODO: add select file button as initial screen
     parent_path = os.path.abspath('../question-ii')
     matrix_path = os.path.join(parent_path, 'data', 'input', 'matrix-i.txt')
+
     ca = celullar_automata.CellularAutomata(matrix_path)
 
+    origin_x = origin_y = destination_x = destination_y = 0
+
+    generation_interval = 0.1
+
+    for x in range(ca.column_count):
+        for y in range(ca.row_count):
+            if ca.matrix[x, y] == 3:
+                origin_x = x
+                origin_y = y
+
+            elif ca.matrix[x, y] == 4:
+                destination_x = x
+                destination_y = y
+
+    pf = pathfinder.Pathfinder(ca, origin_x, origin_y, destination_x, destination_y)
+
+    """
     root = tk.Tk()
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
+    """
+
+    screen_width = 1920
+    screen_height = 1080
 
     cell_size = screen_height // ca.row_count
 
@@ -44,7 +68,8 @@ def view():
     font_path = os.path.join(dir_path, 'fonts', 'emulogic.ttf')
     font = pygame.font.Font(font_path, 24)
 
-    restart_button_x = screen_width - (screen_width - cell_size * ca.column_count) // 2 - 120
+    restart_button_x = screen_width - \
+        (screen_width - cell_size * ca.column_count) // 2 - 120
     restart_button_y = 60
 
     restart_button = button.Button(
@@ -72,8 +97,11 @@ def view():
                 ca.restart()
                 paused = True
 
+
         if not paused:
-            ca.compute_next_generation()
+            ca.attribute_next_generation()
+            pf.move()
+            sleep(generation_interval)
 
         screen.fill(theme.colors['background'])
 
@@ -92,6 +120,10 @@ def view():
                 else:
                     pygame.draw.rect(screen, theme.colors['shade'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size), 1)
+
+        for i in pf.path:
+            pygame.draw.rect(screen, theme.colors['red'],
+                             (i[0] * cell_size, i[1] * cell_size, cell_size, cell_size))
 
         x, y = pygame.mouse.get_pos()
         if restart_button.is_hovering(x, y):
