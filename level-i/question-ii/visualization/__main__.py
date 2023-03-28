@@ -29,7 +29,7 @@ def view():
 
     # TODO: add select file button as initial screen
     parent_path = os.path.abspath('../question-ii')
-    matrix_path = os.path.join(parent_path, 'data', 'matrix.txt')
+    matrix_path = os.path.join(parent_path, 'data', 'input', 'matrix-i.txt')
     ca = celullar_automata.CellularAutomata(matrix_path)
 
     root = tk.Tk()
