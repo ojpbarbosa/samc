@@ -35,21 +35,19 @@ def view():
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    origin_x = origin_y = destination_x = destination_y = 0
+    generation_interval = 0.01
 
-    generation_interval = 1
+    origin = destination = None
 
     for x in range(ca.column_count):
         for y in range(ca.row_count):
             if ca.matrix[x, y] == 3:
-                origin_x = x
-                origin_y = y
+                origin = (x, y)
 
             elif ca.matrix[x, y] == 4:
-                destination_x = x
-                destination_y = y
+                destination = (x, y)
 
-    pf = pathfinder.Pathfinder(ca, origin_x, origin_y, destination_x, destination_y)
+    pf = pathfinder.Pathfinder(ca, origin, destination)
 
     """
     root = tk.Tk()
@@ -99,7 +97,10 @@ def view():
 
         if not paused:
             pf.move()
-            ca.attribute_next_generation()
+            if len(pf.explorers) == 0:
+                paused = True
+            else:
+                ca.attribute_next_generation()
             sleep(generation_interval)
 
         screen.fill(theme.colors['background'])
@@ -120,16 +121,9 @@ def view():
                     pygame.draw.rect(screen, theme.colors['shade'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size), 1)
 
-        for movement in pf.path:
-            movement_x, movement_y = movement
-
-            if movement_x == pf.current_x and movement_y == pf.current_y:
-                pygame.draw.circle(screen, theme.colors['red'],
-                           (pf.current_x * cell_size + cell_size // 2, pf.current_y * cell_size + cell_size // 2), cell_size // 2.25)
-
-            else:
-                pygame.draw.rect(screen, theme.colors['red'],
-                           (movement_x * cell_size, movement_y * cell_size, cell_size, cell_size))
+        for explorer in pf.explorers:
+            pygame.draw.circle(screen, theme.colors['red'], (explorer[-1][0] * cell_size + cell_size // 2,
+                                                              explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
 
         x, y = pygame.mouse.get_pos()
 
