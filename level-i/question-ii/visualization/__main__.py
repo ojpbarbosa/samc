@@ -37,7 +37,7 @@ def view():
 
     origin_x = origin_y = destination_x = destination_y = 0
 
-    generation_interval = 0.1
+    generation_interval = 1
 
     for x in range(ca.column_count):
         for y in range(ca.row_count):
@@ -97,10 +97,9 @@ def view():
                 ca.restart()
                 paused = True
 
-
         if not paused:
-            ca.attribute_next_generation()
             pf.move()
+            ca.attribute_next_generation()
             sleep(generation_interval)
 
         screen.fill(theme.colors['background'])
@@ -121,14 +120,23 @@ def view():
                     pygame.draw.rect(screen, theme.colors['shade'],
                                      (x * cell_size, y * cell_size, cell_size, cell_size), 1)
 
-        for i in pf.path:
-            pygame.draw.rect(screen, theme.colors['red'],
-                             (i[0] * cell_size, i[1] * cell_size, cell_size, cell_size))
+        for movement in pf.path:
+            movement_x, movement_y = movement
+
+            if movement_x == pf.current_x and movement_y == pf.current_y:
+                pygame.draw.circle(screen, theme.colors['red'],
+                           (pf.current_x * cell_size + cell_size // 2, pf.current_y * cell_size + cell_size // 2), cell_size // 2.25)
+
+            else:
+                pygame.draw.rect(screen, theme.colors['red'],
+                           (movement_x * cell_size, movement_y * cell_size, cell_size, cell_size))
 
         x, y = pygame.mouse.get_pos()
+
         if restart_button.is_hovering(x, y):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             restart_button.draw_hovering()
+
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
             restart_button.draw()
