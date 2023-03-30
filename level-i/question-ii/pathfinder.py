@@ -14,41 +14,50 @@ class Pathfinder:
         self.explorers.append([origin])
 
     def explore(self):
+        new_explorers = []
+
+        def valid_explorer(explorer):
+            for new_explorer in new_explorers:
+                if explorer == None or new_explorer == None:
+                    return False
+
+                if explorer[-1] == new_explorer[-1]:
+                    return False
+
+            return True
+
         for explorer in self.explorers.copy():
             explorer_x, explorer_y = explorer[-1]
-            print(explorer_x, explorer_y)
 
             available_movements = self.available_movements(
                 explorer_x, explorer_y)
 
-            if len(available_movements) == 0:
-                self.explorers.remove(explorer)
-
-            elif len(available_movements) == 1:
+            if len(available_movements) == 1:
                 new_explorer = explorer.append(available_movements[0])
 
-                if new_explorer not in self.explorers:
-                    self.explorers.append(new_explorer)
+                if new_explorer not in new_explorers and valid_explorer(new_explorer):
+                    new_explorers.append(new_explorer)
 
-                self.explorers.remove(explorer)
-
-            else:
-                # return self.find_best_movement(available_movements)
-                clone_explorer = explorer.copy()
-                self.explorers.remove(explorer)
-
+            elif len(available_movements) > 1:
                 # derivates explorers
                 for movement in available_movements:
+                    clone_explorer = explorer.copy()
                     clone_explorer.append(movement)
-                    self.explorers.append(clone_explorer.copy())
+                    new_explorer = clone_explorer.copy()
 
-        self.explorers = list(filter(None, self.explorers))
+                    if new_explorer not in new_explorers and valid_explorer(new_explorer):
+                        new_explorers.append(new_explorer)
+
+        self.explorers.clear()
+        new_explorers = list(filter(None, new_explorers))
+        self.explorers = new_explorers.copy()
 
         if len(self.explorers) == 0:
             return
 
+        self.explorers.sort(key=lambda x: valid_explorer(x))
         self.explorers.sort(key=lambda x: self.distance(x[-1]))
-        self.explorers = self.explorers[:1]
+        self.explorers = self.explorers[:30]
 
     def available_movements(self, x, y):
         matrix = self.ca.compute_next_generation()
