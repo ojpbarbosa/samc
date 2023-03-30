@@ -35,7 +35,7 @@ def view():
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    generation_interval = 0
+    generation_interval = 0.05
 
     origin = destination = None
 

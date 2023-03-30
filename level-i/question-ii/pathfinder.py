@@ -55,8 +55,6 @@ class Pathfinder:
                     if new_explorer not in new_explorers and valid_explorer(new_explorer):
                         new_explorers.append(new_explorer)
 
-            print(explorer[-1], len(available_movements), len(new_explorers))
-
         new_explorers = list(filter(None, new_explorers))
 
         if len(new_explorers) == 0:
@@ -143,4 +141,4 @@ class Pathfinder:
             elif dy < 0:
                 directions.append("u ")
 
-        return "".join(directions).upper()
+        return "".join(directions)
