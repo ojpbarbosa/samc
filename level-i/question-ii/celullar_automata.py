@@ -5,7 +5,6 @@ class CellularAutomata:
     def __init__(self, filepath):
         self.filepath = filepath
 
-        self.matrices = []
         self.matrix = []
         self.column_count = 0
         self.row_count = 0
@@ -14,12 +13,7 @@ class CellularAutomata:
 
         self.load_matrix()
 
-    def backtrack_generation(self):
-        self.matrix = self.matrices.pop()
-        self.generation -= 1
-
     def attribute_next_generation(self):
-        self.matrices.append(self.matrix)
         self.matrix = self.compute_next_generation()
         self.generation += 1
 

@@ -1,4 +1,3 @@
-
 import pygame
 import darkdetect
 import tkinter as tk
@@ -9,10 +8,10 @@ from time import sleep
 parent_path = os.path.abspath('.')
 sys.path.insert(1, parent_path)
 
-import celullar_automata
-import pathfinder
-import button
 import theme
+import button
+import pathfinder
+import celullar_automata
 
 
 def view():
@@ -35,7 +34,7 @@ def view():
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    generation_interval = 0.05
+    generation_interval = 0.01
 
     origin = destination = None
 
@@ -47,7 +46,7 @@ def view():
             elif ca.matrix[x, y] == 4:
                 destination = (x, y)
 
-    pf = pathfinder.Pathfinder(ca, origin, destination)
+    pf = pathfinder.Pathfinder(origin, destination)
 
     """
     root = tk.Tk()
@@ -102,8 +101,8 @@ def view():
                 paused = True
             else:
                 ca.attribute_next_generation()
-                pf.move(ca.matrix)
-            sleep(generation_interval)
+                sleep(generation_interval)
+                pf.move(ca.matrix.copy())
 
         screen.fill(theme.colors['background'])
 
@@ -125,7 +124,7 @@ def view():
 
         for explorer in pf.explorers:
             pygame.draw.circle(screen, theme.colors['red'], (explorer[-1][0] * cell_size + cell_size // 2,
-                                                              explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
+                                                             explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
 
         x, y = pygame.mouse.get_pos()
 

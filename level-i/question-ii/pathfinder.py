@@ -1,22 +1,21 @@
-from celullar_automata import CellularAutomata
-
-
 class Pathfinder:
-    def __init__(self, ca: CellularAutomata, origin: tuple, destination: tuple):
-        self.path = []
-        self.explorers = []
+    def __init__(self, origin: tuple, destination: tuple):
+        self.path = []                  # initialize an empty path
+        self.explorers = []             # initialize an empty list of explorers
 
-        self.origin = origin
-        self.destination = destination
+        self.origin = origin            # set the origin point
+        self.destination = destination  # set the destination point
 
+        # add the starting point as an initial explorer
         self.explorers.append([origin])
 
-        self.dead_end = False
+        self.MAXIMUM_EXPLORERS = 50       # set the maximum number of explorers
 
     def explore(self, matrix):
-        new_explorers = []
+        new_explorers = []              # initialize a new list of explorers
 
         def valid_explorer(explorer):
+            # check if the new explorer is not the same as any previous ones
             for new_explorer in new_explorers:
                 if explorer == None or new_explorer == None:
                     return False
@@ -26,73 +25,77 @@ class Pathfinder:
 
             return True
 
-        # new_matrix = self.ca.compute_next_generation()
-
-        for explorer in self.explorers.copy():
+        for explorer in self.explorers[:]:
+            # get the coordinates of the last point of the explorer
             explorer_x, explorer_y = explorer[-1]
 
             available_movements = self.available_movements(
-                explorer_x, explorer_y, matrix)
+                explorer_x, explorer_y, matrix)   # get the available movements for the current point
 
+            # if there are no available movements, skip this explorer
             if len(available_movements) == 0:
                 continue
 
+            # if there is only one available movement, add it to the explorer
             elif len(available_movements) == 1:
-                new_explorer = explorer.append(available_movements[0])
+                new_explorer = explorer + [available_movements[0]]
+                new_explorers.append(new_explorer)
 
-                if new_explorer not in new_explorers and valid_explorer(new_explorer):
-                    new_explorers.append(new_explorer)
-
+            # if there are multiple available movements, clone the explorer for each one
             elif len(available_movements) > 1:
-                # derivates explorers
-                available_movements = list(filter(None, available_movements))
-                available_movements.sort(key=lambda x: self.distance(x))
                 for movement in available_movements:
                     clone_explorer = explorer.copy()
                     clone_explorer.append(movement)
                     new_explorer = clone_explorer.copy()
 
-                    if new_explorer not in new_explorers and valid_explorer(new_explorer):
+                    if valid_explorer(new_explorer):
                         new_explorers.append(new_explorer)
 
+        # remove any None values from the list of explorers
         new_explorers = list(filter(None, new_explorers))
-
-        if len(new_explorers) == 0:
-            self.dead_end = True
-            return
-
+        # clear the previous list of explorers
         self.explorers.clear()
+        # set the new list of explorers
         self.explorers = new_explorers.copy()
 
+        # check if there are any explorers that moved
         if len(self.explorers) == 0:
             return
 
+        # limit to N closest explorers to destination
+        # sort the explorers based on their distance to the destination
         self.explorers.sort(key=lambda x: self.distance(x[-1]))
-        # self.explorers = self.explorers[:30]
+        # keep only the closest self.MAXIMUM_EXPLORERS explorers
+        self.explorers = self.explorers[:self.MAXIMUM_EXPLORERS]
 
     def available_movements(self, x, y, matrix):
-        available_movements = []
+        available_movements = []  # initialize a list of available movements
+        # get the number of columns in the matrix
         column_count = matrix.shape[0]
-        row_count = matrix.shape[1]
+        row_count = matrix.shape[1]  # get the number of rows in the matrix
 
+        # check if the right movement is available
         if x + 1 < column_count and (matrix[x + 1, y] == 0 or matrix[x + 1, y] == 4):
             if matrix[x + 1, y] == 4:
                 return [(x + 1, y)]
 
             available_movements.append((x + 1, y))
 
+        # check if the left movement is available
         if x - 1 >= 0 and (matrix[x - 1, y] == 0 or matrix[x - 1, y] == 4):
             if matrix[x - 1, y] == 4:
                 return [(x - 1, y)]
 
             available_movements.append((x - 1, y))
 
+        # check if the down movement is available
         if y + 1 < row_count and (matrix[x, y + 1] == 0 or matrix[x, y + 1] == 4):
             if matrix[x, y + 1] == 4:
                 return [(x, y + 1)]
 
             available_movements.append((x, y + 1))
 
+        # check if the up movement is available
         if y - 1 >= 0 and (matrix[x, y - 1] == 0 or matrix[x, y - 1] == 4):
             if matrix[x, y - 1] == 4:
                 return [(x, y - 1)]
@@ -101,30 +104,19 @@ class Pathfinder:
 
         return available_movements
 
-    def find_best_movement(self, available_movements):
-        best_movement = available_movements[0]
-
-        for movement in available_movements:
-            if self.distance(movement) < self.distance(best_movement):
-                best_movement = movement
-
-        return best_movement
-
     def distance(self, movement):
+        # manhattan distance calculation
         return abs(self.destination[0] - movement[0]) + abs(self.destination[1] - movement[1])
 
     def move(self, matrix):
         self.explore(matrix)
 
         for explorer in self.explorers:
-            if self.is_finished(explorer):
+            if explorer[-1] == self.destination:
                 self.path = explorer
                 self.explorers.clear()
                 self.explorers = [explorer]
                 return
-
-    def is_finished(self, explorer):
-        return explorer[-1] == self.destination
 
     def path_to_string(self):
         directions = []
