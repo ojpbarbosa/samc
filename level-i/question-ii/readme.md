@@ -39,11 +39,4 @@
       <li><a href="https://pypi.org/project/darkdetect/">Darkdetect</a></li>
     </ul>
   </ul>
-
-  <h2>Todo</h2>
-  - [ ] Improve visualization and interactivity
-  - [ ] Improve "game" or validation
-  - [ ] Use movement sequence as input
-  - [ ] Remove garbage
-  - [ ] Improve overall
 </samp>

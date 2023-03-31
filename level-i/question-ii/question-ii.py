@@ -227,7 +227,8 @@ class Pathfinder:
 
 
 if __name__ == '__main__':
-    ca = CellularAutomata('data/input/matrix-i.txt')
+    matrix = input('Enter the matrix file name: ')
+    ca = CellularAutomata(f'data/input/{matrix}.txt')
 
     origin = destination = None
     for x in range(ca.column_count):
@@ -243,8 +244,7 @@ if __name__ == '__main__':
         ca.attribute_next_generation()
         pf.move(ca.matrix)
 
-    print(pf.path)
     print(pf.path_to_string().upper())
 
-    with open(f'data/output/matrix-i-{time()}.txt', 'w') as file:
+    with open(f'data/output/{matrix}-{time()}.txt', 'w') as file:
         file.write(pf.path_to_string().upper())

@@ -1,15 +1,11 @@
 import pygame
 import darkdetect
 import tkinter as tk
-import sys
 import os
 from time import sleep
 
-parent_path = os.path.abspath('.')
-sys.path.insert(1, parent_path)
-
-import theme
-import button
+from utilities.pygame import theme
+from utilities.pygame import button
 import pathfinder
 import celullar_automata
 
@@ -24,13 +20,12 @@ def view():
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     icon_path = os.path.join(
-        dir_path, 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
+        dir_path, 'assets', 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
 
     # TODO: add select file button as initial screen
-    parent_path = os.path.abspath('../question-ii')
-    matrix_path = os.path.join(parent_path, 'data', 'input', 'matrix-i.txt')
+    matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-iv.txt')
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
@@ -62,7 +57,7 @@ def view():
 
     paused = running = True
 
-    font_path = os.path.join(dir_path, 'fonts', 'emulogic.ttf')
+    font_path = os.path.join(dir_path, 'assets', 'fonts', 'emulogic.ttf')
     font = pygame.font.Font(font_path, 24)
 
     restart_button_x = screen_width - \
@@ -125,6 +120,21 @@ def view():
         for explorer in pf.explorers:
             pygame.draw.circle(screen, theme.colors['red'], (explorer[-1][0] * cell_size + cell_size // 2,
                                                              explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
+
+            for i in range(len(explorer)-1):
+                # Get the starting and ending coordinates for the line
+                origin_x, origin_y = explorer[i]
+                destination_x, destination_y = explorer[i + 1]
+
+                # Calculate the pixel coordinates for the starting and ending points
+                origin_x_pixel = origin_x * cell_size + cell_size // 2 - 1
+                origin_y_pixel = origin_y * cell_size + cell_size // 2 - 1
+                destination_x_pixel = destination_x * cell_size + cell_size // 2 - 1
+                destination_y_pixel = destination_y * cell_size + cell_size // 2 - 1
+
+                # Draw the line between the two points
+                pygame.draw.line(screen, theme.colors['red'], (origin_x_pixel, origin_y_pixel),
+                                 (destination_x_pixel, destination_y_pixel), 2)
 
         x, y = pygame.mouse.get_pos()
 
