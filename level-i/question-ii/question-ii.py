@@ -240,11 +240,20 @@ if __name__ == '__main__':
 
     pf = Pathfinder(origin, destination)
 
+    start_time = time()
+    print(f'Starting pathfinding at {start_time}')
+
     while pf.path == []:
         ca.attribute_next_generation()
         pf.move(ca.matrix)
 
+    path_found_time = time()
+
     print(pf.path_to_string().upper())
+
+    print(f'Path found at {path_found_time}')
+    print(f'Time taken: {path_found_time - start_time}')
+    print(f'Path length: {len(pf.path)}')
 
     with open(f'data/output/{matrix}-{time()}.txt', 'w') as file:
         file.write(pf.path_to_string().upper())
