@@ -25,11 +25,11 @@ def view():
     pygame.display.set_icon(icon)
 
     # TODO: add select file button as initial screen
-    matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-iv.txt')
+    matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-i.txt')
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    generation_interval = 0.01
+    generation_interval = 0
 
     origin = destination = None
 
@@ -43,15 +43,14 @@ def view():
 
     pf = pathfinder.Pathfinder(origin, destination)
 
-    """
+
     root = tk.Tk()
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    """
 
-    screen_width = 1920
-    screen_height = 1080
+    # screen_width = 1920
+    # screen_height = 1080
 
     cell_size = screen_height // ca.row_count
 
@@ -65,7 +64,7 @@ def view():
     restart_button_y = 60
 
     restart_button = button.Button(
-        screen, font, theme.colors['green'], theme.colors['background'], restart_button_x, restart_button_y, 240, 60, 'restart')
+        screen, font, theme.colors['green'], theme.colors['background'], restart_button_x, restart_button_y, 240, 60, '')
 
     while running:
         screen.fill(theme.colors['background'])
@@ -93,11 +92,12 @@ def view():
             if len(pf.path) > 0:
                 print(pf.path)
                 print(pf.path_to_string())
+                print(len(pf.path_to_string().split(' ')))
                 paused = True
             else:
                 ca.attribute_next_generation()
-                sleep(generation_interval)
                 pf.move(ca.matrix.copy())
+                sleep(generation_interval)
 
         screen.fill(theme.colors['background'])
 
@@ -138,6 +138,7 @@ def view():
 
         x, y = pygame.mouse.get_pos()
 
+        restart_button.text = str(ca.generation) + ' gen'
         if restart_button.is_hovering(x, y):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
             restart_button.draw_hovering()

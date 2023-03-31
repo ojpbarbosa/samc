@@ -47,15 +47,21 @@ class CellularAutomata:
 
         for i in range(-1, 2):
             for j in range(-1, 2):
-                x_edge = (x + i + self.column_count) % self.column_count
-                y_edge = (y + j + self.row_count) % self.row_count
+                if i == 0 and j == 0:
+                    continue
+
+                x_edge = x + i
+                y_edge = y + j
+
+                if x_edge < 0 or x_edge >= self.column_count or y_edge < 0 or y_edge >= self.row_count:
+                    continue
 
                 edge_cell = self.matrix[x_edge, y_edge]
 
                 if edge_cell == 1:
                     neighbors += 1
 
-        return neighbors - self.matrix[x, y]
+        return neighbors
 
     def load_matrix(self):
         with open(self.filepath, 'r') as file:

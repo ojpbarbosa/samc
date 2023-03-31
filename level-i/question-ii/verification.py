@@ -33,15 +33,15 @@ def verify():
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    """
+
     root = tk.Tk()
 
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
-    """
 
-    screen_width = 1920
-    screen_height = 1080
+
+    # screen_width = 1920
+    # screen_height = 1080
 
     cell_size = screen_height // ca.row_count
 
