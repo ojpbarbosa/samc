@@ -48,15 +48,21 @@ class CellularAutomata:
 
         for i in range(-1, 2):
             for j in range(-1, 2):
-                x_edge = (x + i + self.column_count) % self.column_count
-                y_edge = (y + j + self.row_count) % self.row_count
+                if i == 0 and j == 0:
+                    continue
+
+                x_edge = x + i
+                y_edge = y + j
+
+                if x_edge < 0 or x_edge >= self.column_count or y_edge < 0 or y_edge >= self.row_count:
+                    continue
 
                 edge_cell = self.matrix[x_edge, y_edge]
 
                 if edge_cell == 1:
                     neighbors += 1
 
-        return neighbors - self.matrix[x, y]
+        return neighbors
 
     def load_matrix(self):
         with open(self.filepath, 'r') as file:
@@ -99,7 +105,7 @@ class Pathfinder:
         # add the starting point as an initial explorer
         self.explorers.append([origin])
 
-        self.MAXIMUM_EXPLORERS = 50       # set the maximum number of explorers
+        self.MAXIMUM_EXPLORERS = 100       # set the maximum number of explorers
 
     def explore(self, matrix):
         new_explorers = []              # initialize a new list of explorers
@@ -215,20 +221,20 @@ class Pathfinder:
             x1, y1 = self.path[i + 1]
             dx, dy = x1 - x0, y1 - y0
             if dx > 0:
-                directions.append('r ')
+                directions.append('R ')
             elif dx < 0:
-                directions.append('l ')
+                directions.append('L ')
             elif dy > 0:
-                directions.append('d ')
+                directions.append('D ')
             elif dy < 0:
-                directions.append('u ')
+                directions.append('U ')
 
         return ''.join(directions)
 
 
 if __name__ == '__main__':
-    matrix = input('Enter the matrix file name: ')
-    ca = CellularAutomata(f'data/input/{matrix}.txt')
+    matrix = input('Matrix file name: ')
+    ca = CellularAutomata(f'{matrix}.txt')
 
     origin = destination = None
     for x in range(ca.column_count):
@@ -241,19 +247,17 @@ if __name__ == '__main__':
     pf = Pathfinder(origin, destination)
 
     start_time = time()
-    print(f'Starting pathfinding at {start_time}')
 
     while pf.path == []:
         ca.attribute_next_generation()
         pf.move(ca.matrix)
 
-    path_found_time = time()
+    end_time = time()
 
-    print(pf.path_to_string().upper())
+    print(pf.path_to_string())
 
-    print(f'Path found at {path_found_time}')
-    print(f'Time taken: {path_found_time - start_time}')
+    print(f'Found in {end_time - start_time}s')
     print(f'Path length: {len(pf.path)}')
 
-    with open(f'data/output/{matrix}-{time()}.txt', 'w') as file:
-        file.write(pf.path_to_string().upper())
+    with open(f'{matrix}-{time()}.txt', 'w') as file:
+        file.write(pf.path_to_string())

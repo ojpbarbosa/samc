@@ -125,12 +125,12 @@ class Pathfinder:
             x1, y1 = self.path[i + 1]
             dx, dy = x1 - x0, y1 - y0
             if dx > 0:
-                directions.append("r ")
+                directions.append('R ')
             elif dx < 0:
-                directions.append("l ")
+                directions.append('L ')
             elif dy > 0:
-                directions.append("d ")
+                directions.append('D ')
             elif dy < 0:
-                directions.append("u ")
+                directions.append('U ')
 
-        return "".join(directions)
+        return ''.join(directions)

@@ -11,6 +11,13 @@ import celullar_automata
 
 
 def view():
+    # TODO: add select file button as initial screen
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    # matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-i.txt')
+    matrix_path = 'matrix.txt'
+
+    ca = celullar_automata.CellularAutomata(matrix_path)
+
     pygame.init()
 
     clock = pygame.time.Clock()
@@ -18,16 +25,10 @@ def view():
 
     pygame.display.set_caption('Stone Automata Maze Challenge')
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
     icon_path = os.path.join(
         dir_path, 'assets', 'images', f'samc-icon-{str(darkdetect.theme()).lower()}.png')
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
-
-    # TODO: add select file button as initial screen
-    matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-i.txt')
-
-    ca = celullar_automata.CellularAutomata(matrix_path)
 
     generation_interval = 0.01
 
