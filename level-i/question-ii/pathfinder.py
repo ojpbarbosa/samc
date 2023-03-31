@@ -9,7 +9,7 @@ class Pathfinder:
         # add the starting point as an initial explorer
         self.explorers.append([origin])
 
-        self.MAXIMUM_EXPLORERS = 100       # set the maximum number of explorers
+        self.MAXIMUM_EXPLORERS = 50       # set the maximum number of explorers
 
     def explore(self, matrix):
         new_explorers = []              # initialize a new list of explorers

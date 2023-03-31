@@ -29,7 +29,7 @@ def view():
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
-    generation_interval = 0
+    generation_interval = 0.01
 
     origin = destination = None
 
@@ -43,14 +43,13 @@ def view():
 
     pf = pathfinder.Pathfinder(origin, destination)
 
+    # root = tk.Tk()
 
-    root = tk.Tk()
+    # screen_width = root.winfo_screenwidth()
+    # screen_height = root.winfo_screenheight()
 
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-
-    # screen_width = 1920
-    # screen_height = 1080
+    screen_width = 1920
+    screen_height = 1080
 
     cell_size = screen_height // ca.row_count
 
