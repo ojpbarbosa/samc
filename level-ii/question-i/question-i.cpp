@@ -27,7 +27,7 @@ public:
   {
     std::vector<std::vector<int> > next_generation_matrix(row_count, std::vector<int>(column_count));
 
-// #pragma omp parallel for
+    // #pragma omp parallel for
     for (int i = 0; i < row_count; i++)
     {
       for (int j = 0; j < column_count; j++)
@@ -139,25 +139,14 @@ private:
   int generation;
 };
 
-
-
-
 int main()
 {
   CellularAutomata cellular_automata("input.txt");
 
   auto total_start = chrono::system_clock::now();
   for (int i = 0; i < 100; i++)
-  {
-    auto start = chrono::system_clock::now();
     cellular_automata.attribute_next_generation();
-    auto end = std::chrono::system_clock::now();
 
-    chrono::duration<double> elapsed_seconds = end - start;
-    time_t end_time = chrono::system_clock::to_time_t(end);
-
-    cout << "Generation " << i + 1 << " took " << elapsed_seconds.count() << "s" << endl;
-  }
   auto total_end = chrono::system_clock::now();
   printf("Total time: %f\n", chrono::duration<double>(total_end - total_start).count());
 
