@@ -14,7 +14,7 @@ def view():
     # TODO: add select file button as initial screen
     dir_path = os.path.dirname(os.path.realpath(__file__))
     # matrix_path = os.path.join(dir_path, 'data', 'input', 'matrix-i.txt')
-    matrix_path = 'matrix.txt'
+    matrix_path = './data/input/matrix-v.txt'
 
     ca = celullar_automata.CellularAutomata(matrix_path)
 
@@ -30,7 +30,7 @@ def view():
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
 
-    generation_interval = 0.01
+    generation_interval = 0.5
 
     origin = destination = None
 
@@ -49,12 +49,12 @@ def view():
     # screen_width = root.winfo_screenwidth()
     # screen_height = root.winfo_screenheight()
 
-    screen_width = 1920
-    screen_height = 1080
+    screen_width, screen_height = pygame.display.get_window_size()
 
     cell_size = screen_height // ca.row_count
 
-    paused = running = True
+    running = True
+    paused = False
 
     font_path = os.path.join(dir_path, 'assets', 'fonts', 'emulogic.ttf')
     font = pygame.font.Font(font_path, 24)
@@ -88,16 +88,16 @@ def view():
                 ca.restart()
                 paused = True
 
-        if not paused:
-            if len(pf.path) > 0:
-                print(pf.path)
-                print(pf.path_to_string())
-                print(len(pf.path_to_string().split(' ')))
-                paused = True
-            else:
-                ca.attribute_next_generation()
-                pf.move(ca.matrix.copy())
-                sleep(generation_interval)
+        # if not paused:
+        #     if len(pf.path) > 0:
+        #         print(pf.path)
+        #         print(pf.path_to_string())
+        #         print(len(pf.path_to_string().split(' ')))
+        #         paused = True
+        #     else:
+        ca.attribute_next_generation()
+        #         pf.move(ca.matrix.copy())
+        sleep(generation_interval)
 
         screen.fill(theme.colors['background'])
 
@@ -118,8 +118,8 @@ def view():
                                      (x * cell_size, y * cell_size, cell_size, cell_size), 1)
 
         for explorer in pf.explorers:
-            pygame.draw.circle(screen, theme.colors['red'], (explorer[-1][0] * cell_size + cell_size // 2,
-                                                             explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
+            # pygame.draw.circle(screen, theme.colors['red'], (explorer[-1][0] * cell_size + cell_size // 2,
+            #                                                  explorer[-1][1] * cell_size + cell_size // 2), cell_size // 2.25)
 
             for i in range(len(explorer)-1):
                 # Get the starting and ending coordinates for the line
@@ -133,8 +133,8 @@ def view():
                 destination_y_pixel = destination_y * cell_size + cell_size // 2 - 1
 
                 # Draw the line between the two points
-                pygame.draw.line(screen, theme.colors['red'], (origin_x_pixel, origin_y_pixel),
-                                 (destination_x_pixel, destination_y_pixel), 2)
+                # pygame.draw.line(screen, theme.colors['red'], (origin_x_pixel, origin_y_pixel),
+                #                  (destination_x_pixel, destination_y_pixel), 2)
 
         x, y = pygame.mouse.get_pos()
 
